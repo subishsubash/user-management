@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: Mutual Fund - User Management Service
+  description: APIs helps to manage the user details.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8081/user-management/api/v1/
+
+paths:
+  /v1/api/users/register:
+    post:
+      tags:
+        - UsersController
+      summary: Enrollment of new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserView"
+      responses:
+        '201':
+          description: User enrollment response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/api/users/{username}:
+    get:
+      tags:
+        - UsersController
+      summary: Enrollment of new user
+      operationId: getUser
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: username to retrieve user details
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: User Details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+        message:
+          type: string
+      required:
+        - status
+        - message
+    UserResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserView"
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - status
+        - message
+        - user
+    UserView:
+      type: object
+      properties:
+        username:
+          type: string
+        passwordHash:
+          type: string
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+        emailId:
+          type: string
+        phoneNumber:
+          type: string
+      required:
+        - username
+        - passwordHash
+        - role
+
