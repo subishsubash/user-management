@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResponseEntity<AllUserResponse> getAllUser(String uuid) throws Exception {
-        logger.info(uuid + COMMA + LOG_MESSAGE + "Processing get user request");
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Processing get All user request");
         AllUserResponse allUserResponse = new AllUserResponse();
         try {
             List<UserView> userViewList = UserMapper.INSTANCE.userListToUserViewList(userRepository.findAll());
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
             genericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
             throw new Exception(e);
         }
-        logger.info(uuid + COMMA + LOG_MESSAGE + "Get user request processed");
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Get All user request processed");
         return new ResponseEntity<>(allUserResponse, HttpStatus.OK);
     }
 
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResponseEntity<UserResponse> removeUser(String uuid, String userName) throws Exception {
-        logger.info(uuid + COMMA + LOG_MESSAGE + "Processing create user request");
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Processing remove user request");
         UserResponse userResponse = new UserResponse();
         try {
 
@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
             genericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
             throw new Exception(e);
         }
-        logger.info(uuid + COMMA + LOG_MESSAGE + "Create user request processed");
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Remove user request processed");
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 }
