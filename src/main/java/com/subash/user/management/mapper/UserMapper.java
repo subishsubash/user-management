@@ -13,10 +13,11 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = "role", expression = "java(mapToEntityRole(userView.getRole()))")
+    @Mapping(target = "passwordHash", ignore = true)
     User userViewToUser(UserView userView);
 
     @Mapping(target = "role", expression = "java(mapToViewRole(user.getRole()))")
-    @Mapping(target = "passwordHash", ignore = true)
+    @Mapping(target = "password", ignore = true)
     UserView userToUserView(User user);
 
     default Role mapToEntityRole(UserView.RoleEnum roleEnum) {

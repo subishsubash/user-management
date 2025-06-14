@@ -89,7 +89,7 @@ components:
       properties:
         username:
           type: string
-        passwordHash:
+        password:
           type: string
         role:
           type: string

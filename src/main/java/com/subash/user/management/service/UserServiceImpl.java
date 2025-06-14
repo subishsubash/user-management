@@ -9,6 +9,7 @@ import com.subash.user.management.util.Constants;
 import com.subash.user.management.util.GenericLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.subash.user.management.util.Constants.*;
@@ -23,23 +24,32 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
 
     }
 
     /**
-     * createUser
+     * Create User method
      *
+     * @param uuid
      * @param userView
      * @return
+     * @throws Exception
      */
     @Override
     public UserResponse createUser(String uuid, UserView userView) throws Exception {
         logger.info(uuid + COMMA + LOG_MESSAGE + "Processing create user request");
         UserResponse userResponse = new UserResponse();
         try {
-            User user = userRepository.save(UserMapper.INSTANCE.userViewToUser(userView));
+
+            User user = UserMapper.INSTANCE.userViewToUser(userView);
+            // Hash password before storing
+            user.setPasswordHash(passwordEncoder.encode(userView.getPassword()));
+            userRepository.save(user);
             userResponse.setUser(UserMapper.INSTANCE.userToUserView(user));
             userResponse.setCode(SUCCESS_CODE);
             userResponse.setMessage(CREATE_RECORD_SUCCESS);
