@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private GenericLogger genericLogger;
+    private final GenericLogger genericLogger;
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, GenericLogger genericLogger) {

@@ -4,7 +4,6 @@ import com.subash.user.management.model.AllUserResponse;
 import com.subash.user.management.model.UserResponse;
 import com.subash.user.management.model.UserView;
 import com.subash.user.management.service.UserService;
-import com.subash.user.management.service.UserServiceImpl;
 import com.subash.user.management.util.Constants;
 import com.subash.user.management.util.GenericLogger;
 import jakarta.validation.Valid;
@@ -12,8 +11,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 import static com.subash.user.management.util.Constants.*;
 
@@ -23,10 +25,10 @@ import static com.subash.user.management.util.Constants.*;
 public class UserController {
 
     private static final Logger logger = LogManager.getLogger(UserController.class);
-    private UserService userService;
-    private GenericLogger genericLogger;
+    private final UserService userService;
+    private final GenericLogger genericLogger;
 
-    public UserController(UserServiceImpl userService, GenericLogger genericLogger) {
+    public UserController(UserService userService, GenericLogger genericLogger) {
 
         this.userService = userService;
         this.genericLogger = genericLogger;
@@ -58,8 +60,12 @@ public class UserController {
     @GetMapping("/users/{username}")
     public ResponseEntity<UserResponse> getUser(@Valid @PathVariable("username") String username) throws Exception {
         String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Collection<? extends GrantedAuthority> roles =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
-        if (!authenticatedUsername.equals(username)) {
+        Boolean isAdminRole = roles.stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!authenticatedUsername.equals(username) && !isAdminRole) {
             UserResponse userResponse = new UserResponse();
             userResponse.setMessage(ACCESS_DENIED);
             userResponse.setCode(ACCESS_DENIED_CODE);
