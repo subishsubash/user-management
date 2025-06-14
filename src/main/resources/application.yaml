@@ -26,3 +26,12 @@ print:
     enable:
       request: true
       response: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
