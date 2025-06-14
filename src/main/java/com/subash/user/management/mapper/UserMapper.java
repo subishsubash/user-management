@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
@@ -19,6 +21,10 @@ public interface UserMapper {
     @Mapping(target = "role", expression = "java(mapToViewRole(user.getRole()))")
     @Mapping(target = "password", ignore = true)
     UserView userToUserView(User user);
+
+    @Mapping(target = "role", expression = "java(mapToViewRole(user.getRole()))")
+    @Mapping(target = "password", ignore = true)
+    List<UserView> userListToUserViewList(List<User> users);
 
     default Role mapToEntityRole(UserView.RoleEnum roleEnum) {
         return roleEnum.name().equals("ADMIN") ? Role.ROLE_ADMIN : Role.ROLE_USER;

@@ -25,6 +25,8 @@ public class Constants {
     public final static String CREATE_USER = "createUser";
     public final static String GET_USER = "getUser";
 
+    public final static String GET_ALL_USER = "getAllUser";
+
     // API response
     public static final String CREATE_RECORD_SUCCESS = "User created successfully";
     public static final Integer CREATE_RECORD_SUCCESS_CODE = 5001;

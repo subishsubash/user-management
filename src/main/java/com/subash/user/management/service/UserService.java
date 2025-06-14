@@ -1,5 +1,6 @@
 package com.subash.user.management.service;
 
+import com.subash.user.management.model.AllUserResponse;
 import com.subash.user.management.model.UserResponse;
 import com.subash.user.management.model.UserView;
 import org.springframework.http.ResponseEntity;
@@ -10,5 +11,7 @@ import org.springframework.http.ResponseEntity;
 public interface UserService {
     ResponseEntity<UserResponse> createUser(String uuid, UserView userView) throws Exception;
 
-    ResponseEntity<UserResponse>  getUser(String uuid, String userName) throws Exception;
+    ResponseEntity<UserResponse> getUser(String uuid, String userName) throws Exception;
+
+    ResponseEntity<AllUserResponse> getAllUser(String uuid) throws Exception;
 }

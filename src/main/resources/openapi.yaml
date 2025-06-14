@@ -27,11 +27,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserResponse"
+
   /v1/api/users/{username}:
     get:
       tags:
         - UsersController
-      summary: Enrollment of new user
+      summary: Get user details
       operationId: getUser
       parameters:
         - name: username
@@ -40,10 +41,6 @@ paths:
           description: username to retrieve user details
           schema:
             type: string
-            minLength: 5
-            maxLength: 20
-            pattern: "^[a-zA-Z0-9_]+$"
-            description: "Must be alphanumeric with underscores, 5-20 characters"
       responses:
         '201':
           description: User Details
@@ -51,6 +48,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserResponse"
+    delete:
+      tags:
+        - UsersController
+      summary: Delete user details
+      operationId: removeUser
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: username to remove user details
+          schema:
+            type: string
+      responses:
+        '201':
+          description: User Details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /v1/api/users:
+    get:
+      tags:
+        - UsersController
+      summary: Fetch All users
+      operationId: getAllUser
+      responses:
+        '201':
+          description: All User Details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllUserResponse"
+
+
 components:
   schemas:
     ErrorResponse:
@@ -63,6 +94,21 @@ components:
       required:
         - status
         - message
+    AllUserResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserView"
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - status
+        - message
+        - user
     UserResponse:
       type: object
       properties:

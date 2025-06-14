@@ -1,6 +1,7 @@
 package com.subash.user.management.service;
 
 import com.subash.user.management.mapper.UserMapper;
+import com.subash.user.management.model.AllUserResponse;
 import com.subash.user.management.model.User;
 import com.subash.user.management.model.UserResponse;
 import com.subash.user.management.model.UserView;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.subash.user.management.util.Constants.*;
@@ -107,5 +109,33 @@ public class UserServiceImpl implements UserService {
         }
         logger.info(uuid + COMMA + LOG_MESSAGE + "Get user request processed");
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
+
+    /**
+     * Get All users
+     *
+     * @param uuid
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public ResponseEntity<AllUserResponse> getAllUser(String uuid) throws Exception {
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Processing get user request");
+        AllUserResponse allUserResponse = new AllUserResponse();
+        try {
+            List<UserView> userViewList = UserMapper.INSTANCE.userListToUserViewList(userRepository.findAll());
+            userViewList.forEach(userView -> {
+                allUserResponse.addUserItem(userView);
+            });
+            allUserResponse.setCode(RECORD_FOUND_CODE);
+            allUserResponse.setMessage(RECORD_FOUND);
+
+        } catch (Exception e) {
+            // Logger error response
+            genericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
+            throw new Exception(e);
+        }
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Get user request processed");
+        return new ResponseEntity<>(allUserResponse, HttpStatus.OK);
     }
 }

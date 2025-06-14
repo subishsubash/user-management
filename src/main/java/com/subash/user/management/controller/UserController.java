@@ -1,5 +1,6 @@
 package com.subash.user.management.controller;
 
+import com.subash.user.management.model.AllUserResponse;
 import com.subash.user.management.model.UserResponse;
 import com.subash.user.management.model.UserView;
 import com.subash.user.management.service.UserService;
@@ -66,4 +67,25 @@ public class UserController {
         logger.info(uuid + COMMA + LOG_MESSAGE + "Fetch user request completed");
         return userResponse;
     }
+
+    /**
+     * Fetch All users.
+     *
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/users")
+    public ResponseEntity<AllUserResponse> getUser() throws Exception {
+        String uuid = GenericLogger.getUUID();
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Request received to fetch all user");
+        //Log request
+        genericLogger.logRequest(logger, uuid, Constants.GET_ALL_USER, Constants.GET_METHOD, null);
+        ResponseEntity<AllUserResponse> allUserResponse = userService.getAllUser(uuid);
+        //Log response
+        genericLogger.logResponse(logger, uuid, HttpStatus.OK.name(), allUserResponse);
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Fetch all user request completed");
+        return allUserResponse;
+    }
+
+
 }
