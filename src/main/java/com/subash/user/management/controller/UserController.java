@@ -6,22 +6,20 @@ import com.subash.user.management.service.UserService;
 import com.subash.user.management.service.UserServiceImpl;
 import com.subash.user.management.util.Constants;
 import com.subash.user.management.util.GenericLogger;
+import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.subash.user.management.util.Constants.FAILURE_CODE;
+import static com.subash.user.management.util.Constants.COMMA;
+import static com.subash.user.management.util.Constants.LOG_MESSAGE;
 
-/**
- * REST controller that implements the {@link UsersControllerApi} interface,
- * providing endpoints for user operations such as creation and retrieval.
- * <p>
- * This controller delegates business logic to {@link UserService}.
- */
+
 @RestController
-public class UserController implements UsersControllerApi {
+@RequestMapping("/v1/api")
+public class UserController {
 
     private static final Logger logger = LogManager.getLogger(UserController.class);
     private UserService userService;
@@ -31,32 +29,38 @@ public class UserController implements UsersControllerApi {
     }
 
     /**
-     * Handles the HTTP POST request to create a new user.
-     * <p>
-     * Logs the request details using a UUID for traceability and delegates
-     * the creation logic to {@link UserService#createUser(String, UserView)}.
-     *
-     * @param userView the request body containing user details to be created
-     * @return {@link ResponseEntity} containing the created {@link UserResponse} and HTTP 201 (Created) status
+     * @param userView (required)
+     * @return
+     * @throws Exception
      */
-    @Override
-    public ResponseEntity<UserResponse> createUser(UserView userView) {
-        UserResponse userResponse = new UserResponse();
-        try {
-            String uuid = GenericLogger.getUUID();
-            GenericLogger.logRequest(logger, uuid, Constants.CREATE_USER, Constants.POST_METHOD, userView);
-            userResponse = userService.createUser(uuid, userView);
-            return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
-        } catch (Exception e) {
-            userResponse.setUser(null);
-            userResponse.setCode(FAILURE_CODE);
-            userResponse.setMessage(Constants.API_PROCESSED_FAILURE);
-            return new ResponseEntity<>(userResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PostMapping("/users/register")
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserView userView) throws Exception {
+        String uuid = GenericLogger.getUUID();
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Request received to user registration");
+        //Log request
+        GenericLogger.logRequest(logger, uuid, Constants.CREATE_USER, Constants.POST_METHOD, userView);
+        ResponseEntity<UserResponse> userResponse = userService.createUser(uuid, userView);
+        //Log response
+        GenericLogger.logResponse(logger, uuid, HttpStatus.CREATED.name(), userResponse);
+        logger.info(uuid + COMMA + LOG_MESSAGE + "User registration request completed");
+        return userResponse;
     }
 
-    @Override
-    public ResponseEntity<UserResponse> getUser(Integer username) {
-        return null;
+    /**
+     * @param username username to retrieve user details (required)
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/users/{username}")
+    public ResponseEntity<UserResponse> getUser(@Valid @PathVariable("username") String username) throws Exception {
+        String uuid = GenericLogger.getUUID();
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Request received to fetch user");
+        //Log request
+        GenericLogger.logRequest(logger, uuid, Constants.GET_USER, Constants.GET_METHOD, username);
+        ResponseEntity<UserResponse> userResponse  = userService.getUser(uuid, username);
+        //Log response
+        GenericLogger.logResponse(logger, uuid, HttpStatus.CREATED.name(), userResponse);
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Fetch user request completed");
+        return userResponse;
     }
 }

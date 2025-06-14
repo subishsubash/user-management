@@ -26,16 +26,25 @@ public class Constants {
     public final static String GET_USER = "getUser";
 
     // API response
-    public static final String CREATE_RECORD_SUCCESS = "Record created successfully";
-    public static final String CREATE_RECORD_FAILURE = "Failed to create record";
-    public final static String API_PROCESSED_FAILURE = "Error while processing the API";
+    public static final String CREATE_RECORD_SUCCESS = "User created successfully";
+    public static final Integer CREATE_RECORD_SUCCESS_CODE = 5001;
+    public static final String RECORD_EXIST = "User exist already with username";
+    public static final Integer RECORD_EXIST_CODE = 5002;
+    public static final String RECORD_NOT_FOUND = "User not found for requested username";
+    public static final Integer RECORD_NOT_FOUND_CODE = 5003;
+    public static final String RECORD_FOUND = "User details found";
+    public static final Integer RECORD_FOUND_CODE = 5004;
+    public final static String API_PROCESSED_FAILURE = "Error while processing the request";
 
     // Method
     public static final String POST_METHOD = "POST";
     public static final String GET_METHOD = "GET";
 
-    //Response Code
-    public static final Integer SUCCESS_CODE = 5001;
-    public static final Integer FAILURE_CODE = 7001;
+    //Response
+    public static final String BAD_REQUEST = "[BAD REQUEST] : ";
+
+    public static final String UNEXPECTED_ERROR = "[UNEXPECTED ERROR] : ";
+    public static final String MALFORMED_JSON = "[MALFORMED JSON] : ";
+
 
 }

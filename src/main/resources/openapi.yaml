@@ -27,12 +27,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserResponse"
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /v1/api/users/{username}:
     get:
       tags:
@@ -45,7 +39,11 @@ paths:
           required: true
           description: username to retrieve user details
           schema:
-            type: integer
+            type: string
+            minLength: 5
+            maxLength: 20
+            pattern: "^[a-zA-Z0-9_]+$"
+            description: "Must be alphanumeric with underscores, 5-20 characters"
       responses:
         '201':
           description: User Details
@@ -53,12 +51,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserResponse"
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     ErrorResponse:
@@ -89,17 +81,26 @@ components:
       properties:
         username:
           type: string
+          minLength: 5
+          maxLength: 20
+          pattern: "^[a-zA-Z0-9_]+$"
+          description: "Must be alphanumeric with underscores, 5-20 characters"
         password:
           type: string
+          minLength: 8
+          maxLength: 50
+          pattern: "^[a-zA-Z0-9_]+$"
+          description: "Must be alphanumeric with underscores, 8-50 characters"
         role:
           type: string
-          enum:
-            - ADMIN
-            - USER
+          enum: [ ADMIN, USER ]
         emailId:
           type: string
+          format: email
         phoneNumber:
           type: string
+          pattern: "^\\d{10}$"
+          description: "Must be a 10-digit number"
       required:
         - username
         - passwordHash
