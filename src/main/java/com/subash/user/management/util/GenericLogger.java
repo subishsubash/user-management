@@ -8,9 +8,15 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 /**
- * This class helps to manage the generic methods for logging
+ * Utility component for structured and conditional logging of API requests and responses.
+ * <p>
+ * This class uses Jackson's {@link ObjectMapper} to serialize objects and Log4j for logging.
+ * Logging is controlled via application properties:
+ * <ul>
+ *     <li>{@code print.log.enable.request=true} to enable request logging</li>
+ *     <li>{@code print.log.enable.response=true} to enable response logging</li>
+ * </ul>
  *
- * @author subash s
  */
 @Component
 public class GenericLogger {
@@ -23,12 +29,13 @@ public class GenericLogger {
     private boolean logResponse;
 
     /**
-     * Method helps to log the API requests
+     * Logs incoming API requests with UUID, operation ID, HTTP method, and request body.
      *
-     * @param logger
-     * @param operationId
-     * @param method
-     * @param requestBody
+     * @param logger       the {@link Logger} to log into
+     * @param UUID         the unique identifier for this request flow
+     * @param operationId  the operation name (e.g., "createUser")
+     * @param method       the HTTP method used (e.g., "POST")
+     * @param requestBody  the actual request body object
      */
     public void logRequest(Logger logger, String UUID, String operationId, String method, Object requestBody) {
         if (logRequest) {
@@ -48,10 +55,12 @@ public class GenericLogger {
     }
 
     /**
-     * @param logger
-     * @param UUID
-     * @param status
-     * @param responseObject
+     * Logs outgoing API responses with UUID, status, and response object.
+     *
+     * @param logger          the {@link Logger} to log into
+     * @param UUID            the unique identifier for this request flow
+     * @param status          the result status (e.g., "SUCCESS", "ERROR")
+     * @param responseObject  the actual response object to be logged
      */
     public void logResponse(Logger logger, String UUID, String status, Object responseObject) {
         if (logResponse) {
@@ -69,9 +78,9 @@ public class GenericLogger {
     }
 
     /**
-     * Method helps to generate the UUID for logger
+     * Generates a formatted UUID string for tracing API requests across logs.
      *
-     * @return
+     * @return a formatted string like {@code [UUID] : 123e4567-e89b-12d3-a456-426614174000}
      */
     public static String getUUID() {
         StringBuffer UUIDString = new StringBuffer(Constants.LOG_UUID);

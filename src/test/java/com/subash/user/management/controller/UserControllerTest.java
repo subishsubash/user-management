@@ -29,6 +29,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Unit tests for {@link com.subash.user.management.controller.UserController}.
+ * <p>
+ * This test class uses {@link WebMvcTest} to focus on testing the web layer (controller)
+ * of the user management module. It mocks out the service layer using {@link MockitoBean},
+ * and uses {@link MockMvc} to perform HTTP requests and validate responses.
+ * </p>
+ *
+ * <p>
+ * The test also includes Spring Security integration with {@link TestSecurityConfig},
+ * allowing tests to simulate secured endpoints using annotations such as {@link WithMockUser}.
+ * </p>
+ *
+ * <p>Libraries Used:</p>
+ * <ul>
+ *     <li>Spring Boot Test</li>
+ *     <li>Spring Security Test</li>
+ *     <li>JUnit 5</li>
+ *     <li>Mockito</li>
+ *     <li>Jackson ObjectMapper</li>
+ * </ul>
+ */
 @WebMvcTest(UserController.class)
 @Import(TestSecurityConfig.class)
 public class UserControllerTest {
@@ -45,6 +67,10 @@ public class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Test case for successfully creating a new user.
+     * Validates that a POST request returns a 200 OK with the expected success message.
+     */
     @Test
     void createUser_Positive() throws Exception {
         UserView userView = new UserView();
@@ -67,6 +93,10 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test case for successfully fetching a specific user by username.
+     * Requires a valid authenticated user with matching username.
+     */
     @WithMockUser(username = "subi", roles = "USER")
     @Test
     void getUser_Positive() throws Exception {
@@ -84,9 +114,14 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test case to verify that access is denied when the authenticated user attempts
+     * to access another user's data.
+     */
+    @WithMockUser(username = "wrongUser", roles = "USER")
     @Test
     void getUser_AccessDenied() throws Exception {
-        setAuthenticatedUsername("wrongUser");
+
 
         mockMvc.perform(get("/v1/api/users/subi"))
                 .andExpect(status().isForbidden())
@@ -95,6 +130,10 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test case for retrieving all users.
+     * Verifies that the GET endpoint returns 200 OK and the correct response payload.
+     */
     @Test
     void getAllUsers_Positive() throws Exception {
         AllUserResponse response = new AllUserResponse();
@@ -109,6 +148,10 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test case for successfully removing a user by username.
+     * Verifies that the DELETE endpoint returns 200 OK with confirmation message.
+     */
     @Test
     void removeUser_Positive() throws Exception {
         String username = "subi";
@@ -125,6 +168,10 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test case to verify behavior when the payload provided to user creation is invalid.
+     * Expects 400 Bad Request status due to validation failure.
+     */
     @Test
     void createUser_InvalidPayload() throws Exception {
         UserView userView = new UserView(); // Assume required fields missing
@@ -134,16 +181,5 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsString(userView)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
-    }
-
-    private void setAuthenticatedUsername(String username) {
-        UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")) // or your actual role
-                );
-
-        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 }

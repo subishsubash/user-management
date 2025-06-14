@@ -21,7 +21,8 @@ import java.util.Optional;
 import static com.subash.user.management.util.Constants.*;
 
 /**
- * Implementation class for UserService
+ * Implementation class for {@link UserService} that provides user-related operations such as
+ * creating, retrieving, listing, and removing users.
  */
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,6 +34,13 @@ public class UserServiceImpl implements UserService {
     private final GenericLogger genericLogger;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Constructs a new instance of {@code UserServiceImpl}.
+     *
+     * @param userRepository  repository for user persistence
+     * @param passwordEncoder encoder for hashing user passwords
+     * @param genericLogger   logger for structured logging
+     */
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, GenericLogger genericLogger) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -41,12 +49,12 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Create User method
+     * Creates a new user after checking if the username already exists. If not, it saves the user with a hashed password.
      *
-     * @param uuid
-     * @param userView
-     * @return
-     * @throws Exception
+     * @param uuid     unique identifier for tracing/logging
+     * @param userView user data received from the client
+     * @return a response containing created user data or an existing record message
+     * @throws Exception if there is a failure during processing
      */
     @Override
     public ResponseEntity<UserResponse> createUser(String uuid, UserView userView) throws Exception {
@@ -76,13 +84,14 @@ public class UserServiceImpl implements UserService {
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
+
     /**
-     * Get user method
+     * Retrieves a user by their username.
      *
-     * @param uuid
-     * @param userName
-     * @return
-     * @throws Exception
+     * @param uuid     unique identifier for tracing/logging
+     * @param userName username to look up
+     * @return a response containing the user data if found, or a not found message
+     * @throws Exception if an error occurs during retrieval
      */
     @Override
     public ResponseEntity<UserResponse> getUser(String uuid, String userName) throws Exception {
@@ -111,11 +120,11 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Get All users
+     * Retrieves all users in the system.
      *
-     * @param uuid
-     * @return
-     * @throws Exception
+     * @param uuid unique identifier for tracing/logging
+     * @return a response containing a list of all users
+     * @throws Exception if an error occurs during data retrieval
      */
     @Override
     public ResponseEntity<AllUserResponse> getAllUser(String uuid) throws Exception {
@@ -139,12 +148,12 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Remove user
+     * Deletes a user by username.
      *
-     * @param uuid
-     * @param userName
-     * @return
-     * @throws Exception
+     * @param uuid     unique identifier for tracing/logging
+     * @param userName username of the user to be deleted
+     * @return a response indicating the result of the delete operation
+     * @throws Exception if deletion fails
      */
     @Override
     public ResponseEntity<UserResponse> removeUser(String uuid, String userName) throws Exception {

@@ -20,6 +20,10 @@ import java.util.Collection;
 import static com.subash.user.management.util.Constants.*;
 
 
+/**
+ * REST controller for managing user operations like registration, fetching user details,
+ * fetching all users, and removing users.
+ */
 @RestController
 @RequestMapping("/v1/api")
 public class UserController {
@@ -28,6 +32,12 @@ public class UserController {
     private final UserService userService;
     private final GenericLogger genericLogger;
 
+    /**
+     * Constructs a UserController with required dependencies.
+     *
+     * @param userService     service to handle user-related operations
+     * @param genericLogger   logger utility for structured logging
+     */
     public UserController(UserService userService, GenericLogger genericLogger) {
 
         this.userService = userService;
@@ -35,9 +45,11 @@ public class UserController {
     }
 
     /**
-     * @param userView (required)
-     * @return
-     * @throws Exception
+     * Endpoint to register a new user.
+     *
+     * @param userView the user details to be registered
+     * @return ResponseEntity containing user registration response
+     * @throws Exception if any exception occurs during registration
      */
     @PostMapping("/users/register")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserView userView) throws Exception {
@@ -53,9 +65,12 @@ public class UserController {
     }
 
     /**
-     * @param username username to retrieve user details (required)
-     * @return
-     * @throws Exception
+     * Endpoint to fetch a specific user's details by username.
+     * Only the authenticated user or an admin can access this.
+     *
+     * @param username the username of the user to retrieve
+     * @return ResponseEntity containing user details
+     * @throws Exception if the user is not authorized or retrieval fails
      */
     @GetMapping("/users/{username}")
     public ResponseEntity<UserResponse> getUser(@Valid @PathVariable("username") String username) throws Exception {
@@ -83,11 +98,12 @@ public class UserController {
         return userResponse;
     }
 
+
     /**
-     * Fetch All users.
+     * Endpoint to fetch all users in the system.
      *
-     * @return
-     * @throws Exception
+     * @return ResponseEntity containing all user details
+     * @throws Exception if fetching fails
      */
     @GetMapping("/users")
     public ResponseEntity<AllUserResponse> getUser() throws Exception {
@@ -104,11 +120,11 @@ public class UserController {
 
 
     /**
-     * Remove user method
+     * Endpoint to remove a user by username.
      *
-     * @param username
-     * @return
-     * @throws Exception
+     * @param username the username of the user to be removed
+     * @return ResponseEntity indicating the result of the deletion operation
+     * @throws Exception if removal fails
      */
     @DeleteMapping("/users/{username}")
     public ResponseEntity<UserResponse> removeUser(@Valid @PathVariable("username") String username) throws Exception {

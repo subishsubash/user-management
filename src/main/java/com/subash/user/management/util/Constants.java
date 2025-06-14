@@ -1,9 +1,16 @@
 package com.subash.user.management.util;
 
 /**
- * Generic class to keep all the constant values
+ * Utility class that holds constant values used across the User Management application.
+ * <p>
+ * This includes:
+ * <ul>
+ *   <li>Logging tags</li>
+ *   <li>Operation identifiers</li>
+ *   <li>Standard API response messages and codes</li>
+ *   <li>HTTP method labels</li>
+ * </ul>
  *
- * @author subash s
  */
 public class Constants {
 
@@ -50,12 +57,10 @@ public class Constants {
     // Method
     public static final String POST_METHOD = "POST";
     public static final String GET_METHOD = "GET";
-
     public static final String DELETE_METHOD = "GET";
 
     //Response
     public static final String BAD_REQUEST = "[BAD REQUEST] : ";
-
     public static final String UNEXPECTED_ERROR = "[UNEXPECTED ERROR] : ";
     public static final String MALFORMED_JSON = "[MALFORMED JSON] : ";
 

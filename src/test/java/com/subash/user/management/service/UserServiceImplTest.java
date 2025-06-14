@@ -20,6 +20,31 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link com.subash.user.management.service.UserServiceImpl}.
+ * <p>
+ * This test class uses {@link MockitoExtension} to enable mocking and injection of dependencies
+ * for isolated unit testing. It tests the service logic without involving any Spring context or web layer.
+ * </p>
+ *
+ * <p>Mocked Dependencies:</p>
+ * <ul>
+ *     <li>{@link UserRepository} - for user data persistence</li>
+ *     <li>{@link PasswordEncoder} - for encoding user passwords</li>
+ *     <li>{@link GenericLogger} - for logging structured response data</li>
+ * </ul>
+ *
+ * <p>
+ * Tests cover all positive and negative paths, including:
+ * <ul>
+ *   <li>Creating new users</li>
+ *   <li>Handling existing users</li>
+ *   <li>Fetching users</li>
+ *   <li>Deleting users</li>
+ *   <li>Exception handling</li>
+ * </ul>
+ * </p>
+ */
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
@@ -42,6 +67,10 @@ class UserServiceImplTest {
 
     private User user;
 
+    /**
+     * Initializes test data before each test.
+     * Sets up a default {@link UserView} and {@link User} instance.
+     */
     @BeforeEach
     void setup() {
         userView = new UserView();
@@ -59,6 +88,10 @@ class UserServiceImplTest {
         user.setPhoneNumber("8293738321");
     }
 
+    /**
+     * Test to verify that a new user is created successfully
+     * when the username does not already exist.
+     */
     @Test
     void testCreateUser_whenUserDoesNotExist_shouldCreateUser() throws Exception {
 
@@ -72,6 +105,10 @@ class UserServiceImplTest {
         assertEquals(5001, response.getBody().getCode());
     }
 
+    /**
+     * Test to verify that when a user already exists with the given username,
+     * the service returns an appropriate response without creating a new user.
+     */
     @Test
     void testCreateUser_whenUserExists_shouldReturnExistCode() throws Exception {
 
@@ -83,6 +120,9 @@ class UserServiceImplTest {
         assertEquals(5002, response.getBody().getCode());
     }
 
+    /**
+     * Test to verify successful retrieval of an existing user by username.
+     */
     @Test
     void testGetUser_whenUserExists_shouldReturnUser() throws Exception {
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
@@ -93,6 +133,10 @@ class UserServiceImplTest {
         assertNotNull(response.getBody().getUser());
     }
 
+    /**
+     * Test to verify that when a username is not found,
+     * the service responds with a "not found" code and no user data.
+     */
     @Test
     void testGetUser_whenNotFound_shouldReturnNotFoundCode() throws Exception {
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
@@ -103,6 +147,10 @@ class UserServiceImplTest {
         assertNull(response.getBody().getUser());
     }
 
+    /**
+     * Test to verify that all users are fetched correctly
+     * from the repository.
+     */
     @Test
     void testGetAllUser_shouldReturnList() throws Exception {
         when(userRepository.findAll()).thenReturn(List.of(user));
@@ -112,6 +160,9 @@ class UserServiceImplTest {
         assertEquals(1, response.getBody().getUsers().size());
     }
 
+    /**
+     * Test to verify successful deletion of an existing user.
+     */
     @Test
     void testRemoveUser_whenExists_shouldDelete() throws Exception {
         User user = new User();
@@ -123,6 +174,10 @@ class UserServiceImplTest {
         verify(userRepository).delete(user);
     }
 
+    /**
+     * Test to verify that attempting to delete a non-existing user
+     * returns the appropriate not-found response and avoids repository delete call.
+     */
     @Test
     void testRemoveUser_whenNotFound_shouldReturnNotFoundCode() throws Exception {
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
@@ -133,6 +188,11 @@ class UserServiceImplTest {
         verify(userRepository, never()).delete(any());
     }
 
+
+    /**
+     * Test to verify that exceptions thrown during user creation
+     * are handled and logged appropriately.
+     */
     @Test
     void testCreateUser_shouldHandleException() {
 
