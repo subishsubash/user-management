@@ -21,10 +21,10 @@ public interface UserMapper {
     UserView userToUserView(User user);
 
     default Role mapToEntityRole(UserView.RoleEnum roleEnum) {
-        return roleEnum != null ? Role.valueOf(roleEnum.name()) : null;
+        return roleEnum.name().equals("ADMIN") ? Role.ROLE_ADMIN : Role.ROLE_USER;
     }
 
     default UserView.RoleEnum mapToViewRole(Role role) {
-        return role != null ? UserView.RoleEnum.valueOf(role.name()) : null;
+        return role.name().equals("ROLE_ADMIN") ? UserView.RoleEnum.ADMIN : UserView.RoleEnum.USER;
     }
 }

@@ -3,6 +3,7 @@ package com.subash.user.management.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
@@ -11,14 +12,15 @@ import java.util.UUID;
  *
  * @author subash s
  */
+@Component
 public class GenericLogger {
 
     private final static String COMMA = ", ";
 
     @Value("${print.log.enable.request}")
-    private static boolean logRequest;
+    private boolean logRequest;
     @Value("${print.log.enable.response}")
-    private static boolean logResponse;
+    private boolean logResponse;
 
     /**
      * Method helps to log the API requests
@@ -28,7 +30,7 @@ public class GenericLogger {
      * @param method
      * @param requestBody
      */
-    public static void logRequest(Logger logger, String UUID, String operationId, String method, Object requestBody) {
+    public void logRequest(Logger logger, String UUID, String operationId, String method, Object requestBody) {
         if (logRequest) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
@@ -51,7 +53,7 @@ public class GenericLogger {
      * @param status
      * @param responseObject
      */
-    public static void logResponse(Logger logger, String UUID, String status, Object responseObject) {
+    public void logResponse(Logger logger, String UUID, String status, Object responseObject) {
         if (logResponse) {
             try {
                 StringBuffer logMsg = new StringBuffer(UUID);

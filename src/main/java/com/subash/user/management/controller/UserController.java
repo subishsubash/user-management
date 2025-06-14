@@ -23,9 +23,12 @@ public class UserController {
 
     private static final Logger logger = LogManager.getLogger(UserController.class);
     private UserService userService;
+    private GenericLogger genericLogger;
 
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserServiceImpl userService, GenericLogger genericLogger) {
+
         this.userService = userService;
+        this.genericLogger = genericLogger;
     }
 
     /**
@@ -38,10 +41,10 @@ public class UserController {
         String uuid = GenericLogger.getUUID();
         logger.info(uuid + COMMA + LOG_MESSAGE + "Request received to user registration");
         //Log request
-        GenericLogger.logRequest(logger, uuid, Constants.CREATE_USER, Constants.POST_METHOD, userView);
+        genericLogger.logRequest(logger, uuid, Constants.CREATE_USER, Constants.POST_METHOD, userView);
         ResponseEntity<UserResponse> userResponse = userService.createUser(uuid, userView);
         //Log response
-        GenericLogger.logResponse(logger, uuid, HttpStatus.CREATED.name(), userResponse);
+        genericLogger.logResponse(logger, uuid, HttpStatus.OK.name(), userResponse);
         logger.info(uuid + COMMA + LOG_MESSAGE + "User registration request completed");
         return userResponse;
     }
@@ -56,10 +59,10 @@ public class UserController {
         String uuid = GenericLogger.getUUID();
         logger.info(uuid + COMMA + LOG_MESSAGE + "Request received to fetch user");
         //Log request
-        GenericLogger.logRequest(logger, uuid, Constants.GET_USER, Constants.GET_METHOD, username);
-        ResponseEntity<UserResponse> userResponse  = userService.getUser(uuid, username);
+        genericLogger.logRequest(logger, uuid, Constants.GET_USER, Constants.GET_METHOD, username);
+        ResponseEntity<UserResponse> userResponse = userService.getUser(uuid, username);
         //Log response
-        GenericLogger.logResponse(logger, uuid, HttpStatus.CREATED.name(), userResponse);
+        genericLogger.logResponse(logger, uuid, HttpStatus.OK.name(), userResponse);
         logger.info(uuid + COMMA + LOG_MESSAGE + "Fetch user request completed");
         return userResponse;
     }

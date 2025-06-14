@@ -28,11 +28,13 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
+    private GenericLogger genericLogger;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, GenericLogger genericLogger) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.genericLogger = genericLogger;
 
     }
 
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (Exception e) {
             // Logger error response
-            GenericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
+            genericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
             throw new Exception(e);
         }
         logger.info(uuid + COMMA + LOG_MESSAGE + "Create user request processed");
@@ -100,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
         } catch (Exception e) {
             // Logger error response
-            GenericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
+            genericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
             throw new Exception(e);
         }
         logger.info(uuid + COMMA + LOG_MESSAGE + "Get user request processed");
