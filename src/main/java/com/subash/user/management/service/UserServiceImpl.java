@@ -63,8 +63,7 @@ public class UserServiceImpl implements UserService {
                 User user = UserMapper.INSTANCE.userViewToUser(userView);
                 // Hash password before storing
                 user.setPasswordHash(passwordEncoder.encode(userView.getPassword()));
-                userRepository.save(user);
-                userResponse.setUser(UserMapper.INSTANCE.userToUserView(user));
+                userResponse.setUser(UserMapper.INSTANCE.userToUserView(userRepository.save(user)));
                 userResponse.setCode(CREATE_RECORD_SUCCESS_CODE);
                 userResponse.setMessage(CREATE_RECORD_SUCCESS);
             }
@@ -125,7 +124,7 @@ public class UserServiceImpl implements UserService {
         try {
             List<UserView> userViewList = UserMapper.INSTANCE.userListToUserViewList(userRepository.findAll());
             userViewList.forEach(userView -> {
-                allUserResponse.addUserItem(userView);
+                allUserResponse.addUsersItem(userView);
             });
             allUserResponse.setCode(RECORD_FOUND_CODE);
             allUserResponse.setMessage(RECORD_FOUND);
@@ -137,5 +136,38 @@ public class UserServiceImpl implements UserService {
         }
         logger.info(uuid + COMMA + LOG_MESSAGE + "Get user request processed");
         return new ResponseEntity<>(allUserResponse, HttpStatus.OK);
+    }
+
+    /**
+     * Remove user
+     *
+     * @param uuid
+     * @param userName
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public ResponseEntity<UserResponse> removeUser(String uuid, String userName) throws Exception {
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Processing create user request");
+        UserResponse userResponse = new UserResponse();
+        try {
+
+            Optional<User> userOptional = userRepository.findByUsername(userName);
+            if (userOptional.isPresent()) {
+                userRepository.delete(userOptional.get());
+                userResponse.setCode(RECORD_REMOVED_CODE);
+                userResponse.setMessage(RECORD_REMOVED);
+                return new ResponseEntity<>(userResponse, HttpStatus.OK);
+            } else {
+                userResponse.setCode(RECORD_NOT_FOUND_CODE);
+                userResponse.setMessage(RECORD_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            // Logger error response
+            genericLogger.logResponse(logger, uuid, "ERROR", Constants.API_PROCESSED_FAILURE);
+            throw new Exception(e);
+        }
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Create user request processed");
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 }

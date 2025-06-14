@@ -12,10 +12,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import static com.subash.user.management.util.Constants.COMMA;
-import static com.subash.user.management.util.Constants.LOG_MESSAGE;
+import static com.subash.user.management.util.Constants.*;
 
 
 @RestController
@@ -57,6 +57,15 @@ public class UserController {
      */
     @GetMapping("/users/{username}")
     public ResponseEntity<UserResponse> getUser(@Valid @PathVariable("username") String username) throws Exception {
+        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (!authenticatedUsername.equals(username)) {
+            UserResponse userResponse = new UserResponse();
+            userResponse.setMessage(ACCESS_DENIED);
+            userResponse.setCode(ACCESS_DENIED_CODE);
+            return new ResponseEntity<>(userResponse, HttpStatus.FORBIDDEN);
+        }
+
         String uuid = GenericLogger.getUUID();
         logger.info(uuid + COMMA + LOG_MESSAGE + "Request received to fetch user");
         //Log request
@@ -87,5 +96,25 @@ public class UserController {
         return allUserResponse;
     }
 
+
+    /**
+     * Remove user method
+     *
+     * @param username
+     * @return
+     * @throws Exception
+     */
+    @DeleteMapping("/users/{username}")
+    public ResponseEntity<UserResponse> removeUser(@Valid @PathVariable("username") String username) throws Exception {
+        String uuid = GenericLogger.getUUID();
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Request received to remove user");
+        //Log request
+        genericLogger.logRequest(logger, uuid, Constants.REMOVE_USER, Constants.DELETE_METHOD, username);
+        ResponseEntity<UserResponse> userResponse = userService.removeUser(uuid, username);
+        //Log response
+        genericLogger.logResponse(logger, uuid, HttpStatus.OK.name(), userResponse);
+        logger.info(uuid + COMMA + LOG_MESSAGE + "Remove user request completed");
+        return userResponse;
+    }
 
 }

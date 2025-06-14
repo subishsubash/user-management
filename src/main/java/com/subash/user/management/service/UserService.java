@@ -14,4 +14,6 @@ public interface UserService {
     ResponseEntity<UserResponse> getUser(String uuid, String userName) throws Exception;
 
     ResponseEntity<AllUserResponse> getAllUser(String uuid) throws Exception;
+
+    ResponseEntity<UserResponse> removeUser(String uuid, String userName) throws Exception;
 }

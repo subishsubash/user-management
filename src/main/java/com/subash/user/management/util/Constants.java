@@ -26,6 +26,7 @@ public class Constants {
     public final static String GET_USER = "getUser";
 
     public final static String GET_ALL_USER = "getAllUser";
+    public final static String REMOVE_USER = "removeUser";
 
     // API response
     public static final String CREATE_RECORD_SUCCESS = "User created successfully";
@@ -36,11 +37,21 @@ public class Constants {
     public static final Integer RECORD_NOT_FOUND_CODE = 5003;
     public static final String RECORD_FOUND = "User details found";
     public static final Integer RECORD_FOUND_CODE = 5004;
+
+    public static final String RECORD_REMOVED = "User details removed";
+    public static final Integer RECORD_REMOVED_CODE = 5005;
+
+    public static final String ACCESS_DENIED = "Access denied: you can only access your own data";
+    public static final Integer ACCESS_DENIED_CODE = 403;
+
+
     public final static String API_PROCESSED_FAILURE = "Error while processing the request";
 
     // Method
     public static final String POST_METHOD = "POST";
     public static final String GET_METHOD = "GET";
+
+    public static final String DELETE_METHOD = "GET";
 
     //Response
     public static final String BAD_REQUEST = "[BAD REQUEST] : ";
