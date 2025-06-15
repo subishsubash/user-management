@@ -15,6 +15,7 @@ A secure and scalable Spring Boot application that provides REST APIs for user r
 - Error, Exception cases are handled with GlobalExceptionHandler using @RestControllerAdvice and @ExceptionHandler
 - DTO mapping done with MapStruct
 - API Documentation using OpenAPI and Swagger.
+- JUnit 5 and Mockito-based integration and service tests
 
 ---
 
