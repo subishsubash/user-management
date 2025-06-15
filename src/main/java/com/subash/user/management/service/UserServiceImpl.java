@@ -108,6 +108,7 @@ public class UserServiceImpl implements UserService {
                 userResponse.setUser(null);
                 userResponse.setCode(RECORD_NOT_FOUND_CODE);
                 userResponse.setMessage(RECORD_NOT_FOUND);
+                return new ResponseEntity<>(userResponse, HttpStatus.NOT_FOUND);
             }
 
         } catch (Exception e) {
@@ -177,6 +178,6 @@ public class UserServiceImpl implements UserService {
             throw new Exception(e);
         }
         logger.info(uuid + COMMA + LOG_MESSAGE + "Remove user request processed");
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        return new ResponseEntity<>(userResponse, HttpStatus.NOT_FOUND);
     }
 }
